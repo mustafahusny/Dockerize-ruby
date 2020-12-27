@@ -1,37 +1,32 @@
-# Dockerizing Ruby Tutorial
+The application is created & dockerized following this (https://semaphoreci.com/community/tutorials/dockerizing-a-ruby-on-rails-application) with some changes 
 
-## Local setup
-
-Prepare environment, for dev version you can use the example environment:
-
+## Dev environment
+Use docker-compose file to run the the containers: 
 ```bash
-$ cp env-example .env
+$ docker-compose up -d
 ```
 
-Start the server:
-
-```bash
-$ docker-compose up --build
-```
-
-Browse http://localhost:8020
 
 ## Production image
 
-Prepare production environment, set you production values:
+Use Docker to build the image and push it to docker hub (mustafahusny/drkiq)
 
 ```bash
-$ cp env-example .env
+$ docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -t mustafahusny/drkiq:latest -f Dockerfile.production .
+$ docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -t mustafahusny/dockerizing-ruby-nginx:latest -f Dockerfile.nginx .
 ```
+## Kuberentes setup
 
-Build two images:
+I am using minikube on my own machine 
+minikube start 
+cd k8s
+minikube kubectl -- apply -f .
 
-- drkiq: application
-- nginx: http server
+To check the status of deployment 
+minikube kubectl -- get deployment 
 
-```bash
-$ docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -t $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest -f Dockerfile.production .
-$ docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -t $DOCKER_USERNAME/dockerizing-ruby-nginx:latest -f Dockerfile.nginx .
-```
+To check the status of pods 
+minikube kubectl get pods 
 
-
+To check logs 
+minikube kubectl -- logs (id)
